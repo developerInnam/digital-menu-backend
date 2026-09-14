@@ -45,14 +45,39 @@ export interface DbStatusInfo {
 }
 
 // In-memory persistent cache for fallback or instant offline preview
-const memoryDb = {
-  vendors: [...initialVendors],
-  categories: [...initialCategories],
-  products: [...initialProducts],
-  orders: [...initialOrders],
-  tables: [...initialTables],
-  coupons: [...initialCoupons],
-  customers: [...initialCustomers],
+// Initialize with hashed passwords for admin and demo users
+const initializeMemoryDb = async () => {
+  const vendorsWithHashedPasswords = await Promise.all(
+    [adminUser, demoVendor].map(async (vendor) => {
+      if (vendor.password) {
+        return {
+          ...vendor,
+          password: await hashPassword(vendor.password)
+        };
+      }
+      return vendor;
+    })
+  );
+  return {
+    vendors: vendorsWithHashedPasswords,
+    categories: [...initialCategories],
+    products: [...initialProducts],
+    orders: [...initialOrders],
+    tables: [...initialTables],
+    coupons: [...initialCoupons],
+    customers: [...initialCustomers],
+    subscriptionPlans: [] as SubscriptionPlan[]
+  };
+};
+
+let memoryDb = {
+  vendors: [],
+  categories: [],
+  products: [],
+  orders: [],
+  tables: [],
+  coupons: [],
+  customers: [],
   subscriptionPlans: [] as SubscriptionPlan[]
 };
 
@@ -208,6 +233,8 @@ export async function seedDatabaseIfEmpty(force = false): Promise<{ seeded: bool
       memoryDb.tables = [...initialTables];
       memoryDb.coupons = [...initialCoupons];
       memoryDb.customers = [...initialCustomers];
+      
+      console.log(`🌱 [In-Memory] Seeded ${vendorsWithHashedPasswords.length} vendors to in-memory store.`);
       return { seeded: true, message: 'Reset and seeded in-memory store.' };
     }
     return { seeded: false, message: 'In-memory store already populated.' };
