@@ -1,0 +1,70 @@
+import express from 'express';
+import dotenv from 'dotenv';
+import cors from 'cors';
+import apiRoutes from './routes';
+import { initDatabase } from './db';
+
+dotenv.config();
+dotenv.config({ path: '.env.local' });
+
+const app = express();
+
+// Middleware for parsing JSON and urlencoded data
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// CORS configuration
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'https://digital-menu-eight.vercel.app',
+  'https://digital-menu.vercel.app',
+  'https://digital-menu-front-end.vercel.app',
+  process.env.CLIENT_URL || process.env.FRONTEND_URL || ''
+].filter(Boolean);
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.warn(`CORS blocked origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Initialize database connection asynchronously without blocking server readiness
+initDatabase().catch(err => {
+  console.warn('Database initialization warning:', err);
+});
+
+// Mount API routes
+app.use('/api', apiRoutes);
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
+});
+
+// For Vercel deployment - export the app
+export default app;
+
+// For local development
+if (import.meta.url === `file://${process.argv[1]}`) {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 [Server] Node.js Express server running on http://0.0.0.0:${PORT}`);
+    console.log(`🍃 [Database] MongoDB & REST API endpoints ready at http://0.0.0.0:${PORT}/api`);
+  });
+}
