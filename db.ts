@@ -22,7 +22,7 @@ import {
   adminUser,
   type SubscriptionPlan,
   type Customer
-} from './src/data/initialData';
+} from './src/data/initialData.js';
 
 export interface DbStatusInfo {
   engine: 'mongodb' | 'in_memory_fallback';
