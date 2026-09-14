@@ -1,8 +1,8 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import apiRoutes from './routes';
-import { initDatabase } from './db';
+import apiRoutes from './routes.js';
+import { initDatabase } from './db.js';
 
 dotenv.config();
 dotenv.config({ path: '.env.local' });

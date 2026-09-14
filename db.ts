@@ -8,8 +8,8 @@ import {
   CouponModel,
   CustomerModel,
   SubscriptionPlanModel
-} from './models/schemas';
-import { hashPassword } from './utils/auth';
+} from './models/schemas.js';
+import { hashPassword } from './utils/auth.js';
 import {
   initialVendors,
   initialCategories,
