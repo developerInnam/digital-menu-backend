@@ -184,10 +184,13 @@ export async function seedDatabaseIfEmpty(force = false): Promise<{ seeded: bool
     }
   } else {
     // Reset in-memory database
-    if (force) {
+    if (force || memoryDb.vendors.length === 0) {
+      // Use admin and demo vendor if in-memory store is empty
+      const vendorsToSeed = memoryDb.vendors.length === 0 ? [adminUser, demoVendor] : initialVendors;
+      
       // Hash passwords for in-memory store
       const vendorsWithHashedPasswords = await Promise.all(
-        initialVendors.map(async (vendor) => {
+        vendorsToSeed.map(async (vendor) => {
           if (vendor.password) {
             return {
               ...vendor,
