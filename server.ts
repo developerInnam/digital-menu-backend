@@ -20,6 +20,7 @@ const allowedOrigins = [
   'https://digital-menu-eight.vercel.app',
   'https://digital-menu.vercel.app',
   'https://digital-menu-front-end.vercel.app',
+  'https://digital-menu-front-end-ashen.vercel.app',
   process.env.CLIENT_URL || process.env.FRONTEND_URL || ''
 ].filter(Boolean);
 
