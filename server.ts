@@ -58,6 +58,20 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Catch-all for undefined routes - return JSON error
+app.use((req, res) => {
+  res.status(404).json({ error: 'Route not found', path: req.path });
+});
+
+// Error handler - ensure JSON responses
+app.use((err: any, req: any, res: any, next: any) => {
+  console.error('Server error:', err);
+  res.status(500).json({ 
+    error: 'Internal server error', 
+    message: err.message || 'An unexpected error occurred' 
+  });
+});
+
 // For Vercel deployment - export the app
 export default app;
 
