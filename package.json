@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "tsx api/index.ts"
+    "dev": "tsx api/index.ts",
+    "build": "tsc"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

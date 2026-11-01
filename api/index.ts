@@ -84,6 +84,4 @@ export function broadcastToVendor(vendorId: string, data: any) {
 }
 
 // Vercel serverless function handler
-export default function handler(req: any, res: any) {
-  return app(req, res);
-}
+export default app;
