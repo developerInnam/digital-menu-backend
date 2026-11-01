@@ -7,14 +7,9 @@
     "moduleResolution": "node",
     "isolatedModules": true,
     "allowJs": true,
-    "outDir": "./dist",
-    "rootDir": "./",
     "strict": false,
     "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "noResolveJsonModule": false,
-    "noImplicitAny": false
+    "resolveJsonModule": true
   },
-  "exclude": ["node_modules"],
-  "include": ["**/*.ts"]
+  "exclude": ["node_modules"]
 }
